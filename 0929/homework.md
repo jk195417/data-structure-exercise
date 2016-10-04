@@ -20,7 +20,7 @@ number = 2**(input)-1
 
 ### 執行結果
 
-![執行結果](file:./homework.png)
+![執行結果](./homework.png)
 
 ### 遭遇困難
 
