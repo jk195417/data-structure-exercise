@@ -1,5 +1,6 @@
 # depslib dependency file v1.0
-1476426810 source:/Users/Xin/Code/Data Structure Exercise/1013/homework/main.c
+1476790909 source:/Users/Xin/Code/Data-Structure-Exercise/1013/homework/main.cpp
 	<stdio.h>
 	<stdlib.h>
+	<math.h>
 
