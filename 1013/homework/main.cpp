@@ -1,18 +1,16 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-#define MAX 100
-struct polynomial
-{
-	float coef;
-	int expon;
-
-};
+#define MAX 10
+typedef struct {
+	float coe;
+	int exp;
+} variable;
 
 struct mypoly
 {
-	polynomial terms[MAX];
-	int total;
+	variable var[MAX];
+	int length;
 
 	void ShowPoly();
 	mypoly Add(mypoly);
@@ -23,14 +21,11 @@ struct mypoly
 	mypoly Mult(mypoly);
 
 	mypoly(){
-
-		total = 0;
-
+		length = 0;
 	};
-	mypoly(char *filename)
-	{
-		FILE* fptr;
-		fptr =fopen(filename,"r");
+	mypoly(char *filename){
+		FILE *fptr;
+		fptr = fopen(filename,"r");
 		total=0;
 		while(!feof(fptr))
 		{
@@ -44,6 +39,7 @@ struct mypoly
 
 int main()
 {
+
 	mypoly A("a.txt");
 	mypoly B("b.txt");
 	int i;
