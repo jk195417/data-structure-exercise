@@ -1,87 +1,173 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-#define MAX 10
-typedef struct {
+
+#define POLY_MAX 10
+#define ACT_LEN 8
+
+struct variable{
 	float coe;
 	int exp;
-} variable;
+};
 
-struct mypoly
-{
-	variable var[MAX];
+struct mypoly{
+	variable var[POLY_MAX];
 	int length;
 
+	void ReadData(char *filename);
 	void ShowPoly();
 	mypoly Add(mypoly);
-	mypoly SingelMult(int);
+	void SingelMult(int);
 	int Lead_Exp();
 	void Attach(float,int);
 	void Remove(int);
 	mypoly Mult(mypoly);
 
 	mypoly(){
-		length = 0;
+    length = 0;
 	};
+
 	mypoly(char *filename){
 		FILE *fptr;
 		fptr = fopen(filename,"r");
-		total=0;
-		while(!feof(fptr))
-		{
-			fscanf(fptr,"%f %d",&terms[total].coef,&terms[total].expon);
-			total++;
-
+		length = 0;
+		while(!feof(fptr)){
+			fscanf(fptr,"%f %d",&var[length].coe,&var[length].exp);
+			length++;
 		}
 		fclose(fptr);
 	};
 };
 
-int main()
-{
+int main(){
+  int opt,p,mult;
+  bool over = false;
+  mypoly A,B;
+	char *action[ACT_LEN];
+	action[0]="Åª¤J¦h¶µ¦¡\n";
+	action[1]="¦L¥X¦h¶µ¦¡¤º®e\n";
+	action[2]="¦h¶µ¦¡¬Û¥[\n";
+	action[3]="¦h¶µ¦¡­¼¤W¤@¼Æ­È\n";
+	action[4]="¦L¥X¦h¶µ¦¡¤¤³Ì¤j«ü¼Æªº«Y¼Æ\n";
+	action[5]="·s¼W¶µ¦¡\n";
+	action[6]="§R°£¦h¶µ¦¡¤¤ªº¶µ¦¡\n";
+	action[7]="¦h¶µ¦¡¬Û­¼\n";
 
-	mypoly A("a.txt");
-	mypoly B("b.txt");
-	int i;
+	A.ReadData("a.txt");
+  B.ReadData("b.txt");
 
-	A.ShowPoly();
-	B.ShowPoly();
+  while(!over){
+    for(int i=0;i<ACT_LEN;i++){
+      printf("%d. %s",i+1,action[i]);
+    }
+    printf("¨ä¥L. Â÷¶}¦¹µ{§Ç\n\n");
+    printf("½Ð¿ï¾Ü : ");
+    scanf("%d",&opt);
+    printf("\n");
+    switch(opt){
+      case 1:
+        A.ReadData("a.txt");
+        B.ReadData("b.txt");
+        break;
+      case 2:
+        printf("¦h¶µ¦¡1:");
+        A.ShowPoly();
+        printf("¦h¶µ¦¡2:");
+        B.ShowPoly();
+        break;
+      case 3:
+        break;
+      case 4:
 
-	A = A.SingelMult(3);
-	A.ShowPoly();
-
-
-	system("pause");
+        printf("½Ð¿é¤J­n¾Þ§@­þ­Ó¦h¶µ¦¡:");
+        scanf("%d",&p);
+        if(p!=1 && p!=2){
+          printf("¿é¤J¿ù»~,½Ð­«·s¹Á¸Õ\n");
+          break;
+        }
+        printf("½Ð¿é¤J­n­¼¤W­þ­Ó¥¿¾ã¼Æ:");
+        scanf("%d",&mult);
+        if(p==1){
+          A.SingelMult(mult);
+        }
+        if(p==2){
+          B.SingelMult(mult);
+        }
+        break;
+      case 5:
+        printf("½Ð¿é¤J­n¦L¥X­þ­Ó¦h¶µ¦¡ªº»â¾É«Y¼Æ:");
+        scanf("%d",&p);
+        if(p!=1 && p!=2){
+          printf("¿é¤J¿ù»~,½Ð­«·s¹Á¸Õ\n");
+          break;
+        }
+        printf("\n¦h¶µ¦¡%dªº»â¾É«Y¼Æ¬°%",p);
+        if(p==1){
+          printf("%d\n",A.Lead_Exp());
+        }
+        if(p==2){
+         printf("%d\n",B.Lead_Exp());
+        }
+        break;
+      case 6:
+        break;
+      case 7:
+        break;
+      case 8:
+        break;
+      default:
+        over = true;
+        printf("Â÷¶}µ{§Ç¤¤...");
+    }
+    printf("------------------\n\n");
+  }
 	return 0;
 }
 
-void mypoly::ShowPoly()
-{
-
-	int i;
-	for(i=0;i<total;i++)
-	{
-		if(i<total-1)
-		{
-			printf("%.0fX^%d+",terms[i].coef,terms[i].expon);
-		}
-		else
-			printf("%.0fX^%d",terms[i].coef,terms[i].expon);
-	}
-	printf("€n");
-
+void mypoly::ReadData(char *filename){
+  FILE *fptr;
+  fptr = fopen(filename,"r");
+  length = 0;
+  while(!feof(fptr)){
+    fscanf(fptr,"%f %d",&var[length].coe,&var[length].exp);
+    length++;
+  }
+  fclose(fptr);
 }
 
-mypoly mypoly::SingelMult(int c)
-{
-	mypoly D;
-	int i;
+void mypoly::ShowPoly(){
+  variable temp;
+	for(int i=0;i<length;i++){
+    for(int j=i;j<length;j++){
+      if(var[i].exp<var[j].exp){
+        temp = var[i];
+        var[i] = var[j];
+        var[j] = temp;
+      }
+    }
 
-	for(i=0;i<total;i++)
-	{
-		D.terms[i].coef = terms[i].coef * c ;
-		D.terms[i].expon = terms[i].expon ;
-		D.total++;
+		if(i==length-1){
+			printf("%.0fX^%d\n",var[i].coe,var[i].exp);
+		}else{
+      printf("%.0fX^%d + ",var[i].coe,var[i].exp);
+		}
 	}
-	return D;
+}
+
+void mypoly::SingelMult(int c){
+	for(int i=0;i<length;i++){
+		var[i].coe = var[i].coe * c;
+	}
+}
+
+int mypoly::Lead_Exp(){
+  variable temp;
+  temp.exp=0;
+  for(int i=0;i<length;i++){
+    if(temp.exp < var[i].exp){
+      temp.exp = var[i].exp;
+      temp.coe = var[i].coe;
+    }
+  }
+  return temp.coe;
 }
