@@ -20,6 +20,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="a.txt" />
+		<Unit filename="b.txt" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

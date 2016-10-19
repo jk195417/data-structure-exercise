@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<math.h>
 
-#define POLY_MAX 10
+#define POLY_MAX 30
 #define ACT_LEN 8
 
 struct variable{
@@ -40,7 +40,8 @@ struct mypoly{
 };
 
 int main(){
-  int opt,p,mult;
+  int opt,p,mult,add_e,re_e;
+  float add_c;
   bool over = false;
   mypoly A,B;
 	char *action[ACT_LEN];
@@ -76,9 +77,10 @@ int main(){
         B.ShowPoly();
         break;
       case 3:
+        printf("多項式相加結果:");
+        A.Add(B).ShowPoly();
         break;
       case 4:
-
         printf("請輸入要操作哪個多項式:");
         scanf("%d",&p);
         if(p!=1 && p!=2){
@@ -101,7 +103,7 @@ int main(){
           printf("輸入錯誤,請重新嘗試\n");
           break;
         }
-        printf("\n多項式%d的領導係數為%",p);
+        printf("\n多項式%d的領導係數為",p);
         if(p==1){
           printf("%d\n",A.Lead_Exp());
         }
@@ -110,10 +112,42 @@ int main(){
         }
         break;
       case 6:
+        printf("請輸入要操作哪個多項式:");
+        scanf("%d",&p);
+        if(p!=1 && p!=2){
+          printf("輸入錯誤,請重新嘗試\n");
+          break;
+        }
+        printf("請輸入要加上的項次係數:");
+        scanf("%f",&add_c);
+        printf("請輸入要加上的項次指數:");
+        scanf("%d",&add_e);
+        if(p==1){
+          A.Attach(add_c,add_e);
+        }
+        if(p==2){
+          B.Attach(add_c,add_e);
+        }
         break;
       case 7:
+        printf("請輸入要操作哪個多項式:");
+        scanf("%d",&p);
+        if(p!=1 && p!=2){
+          printf("輸入錯誤,請重新嘗試\n");
+          break;
+        }
+        printf("請輸入要移除的項次的指數:");
+        scanf("%d",&re_e);
+        if(p==1){
+          A.Remove(re_e);
+        }
+        if(p==2){
+          B.Remove(re_e);
+        }
         break;
       case 8:
+        printf("多項式相乘結果:");
+        A.Mult(B).ShowPoly();
         break;
       default:
         over = true;
@@ -154,6 +188,33 @@ void mypoly::ShowPoly(){
 	}
 }
 
+mypoly mypoly::Add(mypoly p2){
+  mypoly temp1;
+  temp1.length = length;
+  mypoly temp2=p2;
+
+  for(int i=0;i<temp1.length;i++){
+    temp1.var[i] = var[i];
+    for(int j=temp2.length-1;j>=0;j--){
+      variable temp_v;
+      if(temp1.var[i].exp==temp2.var[j].exp){
+        temp_v = temp2.var[j];
+        temp2.var[j] = temp2.var[temp2.length-1];
+        temp2.var[temp2.length-1] = temp_v;
+        temp1.var[i].coe += temp2.var[temp2.length-1].coe;
+        temp2.length--;
+        break;
+      }
+    }
+  }
+  for(int k=0;k<temp2.length;k++){
+    temp1.var[length+k]=temp2.var[k];
+    temp1.length++;
+  }
+  return temp1;
+
+}
+
 void mypoly::SingelMult(int c){
 	for(int i=0;i<length;i++){
 		var[i].coe = var[i].coe * c;
@@ -170,4 +231,52 @@ int mypoly::Lead_Exp(){
     }
   }
   return temp.coe;
+}
+
+void mypoly::Attach(float c,int e){
+  bool same_exp = false;
+  for(int i=0;i<length;i++){
+    if(var[i].exp==e){
+      var[i].coe += c;
+      same_exp = true;
+      break;
+    }
+  }
+  if(!same_exp){
+    var[length].coe = c;
+    var[length].exp = e;
+    length++;
+  }
+}
+
+void mypoly::Remove(int e){
+ float c=0.0;
+  for(int i=0;i<length;i++){
+    if(var[i].exp == e){
+      c = var[i].coe;
+      var[i] = var[length-1];
+      var[length-1].coe=0;
+      var[length-1].exp=0;
+      length--;
+      printf("%.0fx^%d已Remove\n",c,e);
+      break;
+    }
+  }
+  if(c==0){
+    printf("沒有找到這個次方的項次\n");
+  }
+}
+
+mypoly mypoly::Mult(mypoly p2){
+  mypoly total;
+  for(int i=0;i<length;i++){
+    mypoly temp;
+    for(int j=0;j<p2.length;j++){
+      temp.var[j].coe = var[i].coe * p2.var[j].coe;
+      temp.var[j].exp = var[i].exp + p2.var[j].exp;
+      temp.length++;
+    }
+    total = total.Add(temp);
+  }
+  return total;
 }
