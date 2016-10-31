@@ -8,5 +8,7 @@
 *.cbp
 *.depend
 *.layout
-/bin/
-/obj/
+*.xml
+bin/
+obj/
+
