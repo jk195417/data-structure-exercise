@@ -1,2 +1,12 @@
+# osx
 .DS_Store
+
+# xcode
 *.xcodeproj/
+
+# codeblock
+*.cbp
+*.depend
+*.layout
+/bin/
+/obj/
